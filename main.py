@@ -2,8 +2,25 @@ from tools import download
 from tools import exitError
 from tools import header
 import sys
+import argparse
 
-if len(sys.argv) == 1:
+parser = argparse.ArgumentParser(
+    description=None,
+    usage=None,
+    add_help=False
+)
+parser.add_argument('--help', action='store_true', help='Show this help message and exit')
+args, unknown = parser.parse_known_args()
+
+if args.help:
+    header()
+    print("\nUsage: main.py [urls] [--res=RESOLUTION] [--only-audio]")
+    print("options:")
+    print("     --res=RESOLUTION      Set the resolution (1080, 720, 480, 360)")
+    print("     --only-audio          Download as MP3 (audio only)")
+    sys.exit(0)
+
+elif len(sys.argv) == 1:
     header()
     urls_input = input("Enter YouTube URL(s), separated by spaces: ").strip()
     if not urls_input:
@@ -11,8 +28,8 @@ if len(sys.argv) == 1:
         exit(1)
 
     urls = urls_input.split()
-    choice = 'f'
-    while choice not in "yn":
+    choice = 'd'
+    while choice not in "ynYN":
         choice = input("Download as MP3 (audio only)? (y/n): ").strip().lower()
     audio_only = choice == 'y'
 
@@ -32,33 +49,34 @@ if len(sys.argv) == 1:
                 print("Invalid choice. Please select a number between 1 and 4.")
         resolution_map = {'1': '1080', '2': '720', '3': '480', '4': '360'}
         resolution = resolution_map.get(res_choice, '1080')
-    download(urls.split(' '), audio_only, resolution=resolution)
+    # print(urls)
+    download(urls, audio_only, resolution=resolution)
 
-elif len(sys.argv) > 4:
+elif len(sys.argv) >= 2:
     valid_res = {"1080", "720", "480", "360","1080p", "720p", "480p", "360p"}
     audio_only = False
     resolution = "1080"
     if ("https:" in sys.argv[1]) :
         urls = sys.argv[1]
     else:
-        exitError()
+        exitError(None)
     for i in range(len(sys.argv)):
-        if ("https:" in sys.argv[i]):
-            urls =  urls + ' ' + sys.argv[i]
-        if ("--only-audio" in sys.argv[i]):
+        arg = sys.argv[i]
+        if "https:" in arg:
+            urls =  urls + ' ' + arg
+        if "--only-audio" in arg:
             audio_only = True
-        if ("--res=" in sys.argv[i]):
-            if (sys.argv[i].split('=')[1] in valid_res):
-                if 'p' in sys.argv[i].split('=')[1]:
-                    resolution = sys.argv[i].split('=')[1][:-1]
+        if not audio_only and "--res=" in arg:
+            if (arg.split('=')[1] in valid_res):
+                if 'p' in arg.split('=')[1]:
+                    resolution = arg.split('=')[1][:-1]
                 else:   
-                    resolution = sys.argv[i].split('=')[1]
+                    resolution = arg.split('=')[1]
             else:
-                print(sys.argv[i])
                 exitError("Invalid Resolution")
     
     # urls = urls.split(' ')
-    # header()
+    header()
     # print(urls.split())
     # print(audio_only)
     # print(resolution)

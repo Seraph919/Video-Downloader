@@ -13,6 +13,7 @@ def download(urls, audio_only, output_dir='downloads', resolution='1080'):
 
     if audio_only == True:
         ydl_opts = {
+            'ffmpeg_location': './ffmpeg-7.0.2-amd64-static/',
             'format': 'bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
@@ -24,6 +25,7 @@ def download(urls, audio_only, output_dir='downloads', resolution='1080'):
     else:
         video_format = f'bestvideo[height<={resolution}]+bestaudio/best[height<={resolution}]/best'
         ydl_opts = {
+            'ffmpeg_location': './ffmpeg-7.0.2-amd64-static/',
             'format': video_format,
             'merge_output_format': 'mp4',
             'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s')

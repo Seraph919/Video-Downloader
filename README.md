@@ -13,15 +13,15 @@
 
 - Python 3.7+
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-- FFmpeg installed and in your system PATH
 
 ## Instalation
 ```bash
 pip install -r requirements.txt
 ```
-## Use
+## help usage
 ```bash
-python3 main.py
+python3 main.py --help
 ```
+
 Credit:
 https://github.com/yt-dlp/yt-dlp
