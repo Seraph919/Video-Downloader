@@ -1,8 +1,11 @@
-from tools import download
-from tools import exitError
-from tools import header
 import sys
 import argparse
+from halo import Halo
+from tools import download
+from tools import suppress_output
+from tools import exitError
+from tools import header
+
 
 parser = argparse.ArgumentParser(
     description=None,
@@ -80,4 +83,12 @@ elif len(sys.argv) >= 2:
     # print(urls.split())
     # print(audio_only)
     # print(resolution)
-    download(urls.split(' '), audio_only, resolution=resolution)
+    spinner = Halo(text='Downloading...', spinner='dots')
+    spinner.start()
+
+    try:
+        with suppress_output():
+            download(urls, audio_only, resolution=resolution)
+        spinner.succeed("Download complete!")
+    except Exception as e:
+        spinner.fail(f"Failed: {e}")
